@@ -60,6 +60,7 @@ router.get('/work/summary/:id', (req, res) => {
     
     // Assemble summary
     const ficSummary = {
+      work_id: id,
       title, 
       author, 
       rating,
@@ -144,6 +145,7 @@ router.get('/work/all/:id', (req, res) => {
 
     // Creating a fic object
     const fic = {
+      work_id: id,
       title, 
       author, 
       rating,
@@ -210,10 +212,63 @@ router.get('/work/all/:id', (req, res) => {
   })
 });
 
+/**
+ * Get a user's profile details by username
+ */
+router.get('/user/:username', (req, res) => {
+  const username = req.params.username;
 
+  axios({
+    method: 'GET',
+    url: `https://archiveofourown.org/users/${username}/profile`
+  }).then((response) => {
+    const $ = cheerio.load(response.data);
 
+    const pseuds = [];
+    let date_joined;
+    let user_id;
+    let location;
+    let birthday;
 
+    $('.user.home.profile .wrapper .meta').children().each((i, elem) => {
+      // Grab pseuds
+      if(i == 1){
+        console.log($(elem).find('a').text().trim());
+        $(elem).find('a').each((j, chil) => {
+          pseuds.push($(chil).text().trim());
+        })
+        // Date joined
+      } else if(i == 3){
+        date_joined = $(elem).text().trim();
+        // user id
+      } else if(i == 5){
+        user_id = $(elem).text().trim();
+      } else if(i == 7){
+        location = $(elem).text().trim();
+      } else if(i ==9){
+        birthday = $(elem).text().trim();
+      }
+    })
 
+    const user = {
+      username,
+      user_id,
+      pseuds,
+      date_joined,
+      location,
+      birthday,
+      bio: []
+    }
+
+    $('.bio.module .userstuff p').each((i, elem) => {
+      user.bio.push($(elem).text().trim());
+    })
+    
+    res.send(user);
+  }).catch((error) => {
+    res.sendStatus(500);
+  })
+})
 
 
 module.exports = router;
