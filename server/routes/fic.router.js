@@ -55,17 +55,14 @@ router.get('/:id', (req, res) => {
     $('.stats dt').each((i, el) => {
       stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
     })
-
-    // -----------------------------------------------------------------
-
     const summary = [];
-    // $('.preface.group .summary.module blockquote:first').each((i , el) => {
-    //   summary.push($(el).text().trim());
-    // })
+    $('#workskin .preface.group:first').find('.summary.module p').each((i , el) => {
+      summary.push($(el).text().trim());
+    })
     const notes = [];
-    // $('.preface.group .notes.module blockquote:first').each((i, el) => {
-    //   notes.push($(el).text().trim());
-    // })
+    $('#workskin .preface.group:first').find('.notes.module p').each((i, el) => {
+      notes.push($(el).text().trim());
+    })
 
     // Creating a fic object
     const fic = {
@@ -102,11 +99,12 @@ router.get('/:id', (req, res) => {
         // In the first preface group, scrape chapter title, summary, and notes
         if (j==0){
           chapter.chapter_title = $(chil).find('.title').text().trim();
-          $(chil).find('.summary.module blockquote').each((k, line) => {
+
+          $(chil).find('.summary.module blockquote p').each((k, line) => {
             chapter.chapter_summary.push($(line).text().trim());
           })
 
-          $(chil).find('.notes.module blockquote').each((k, line) => {
+          $(chil).find('.notes.module blockquote p').each((k, line) => {
             chapter.chapter_notes_start.push($(line).text().trim());
           })
           
@@ -118,7 +116,7 @@ router.get('/:id', (req, res) => {
           
           // If there are more than two children, then there is an end of chapter notes section we need to grab
         } else {
-          $(chil).find('.end.notes.module blockquote').each((k, line) => {
+          $(chil).find('.end.notes.module blockquote p').each((k, line) => {
             chapter.chapter_notes_end.push($(line).text().trim());
           });
         }
