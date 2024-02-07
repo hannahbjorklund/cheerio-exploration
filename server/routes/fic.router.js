@@ -4,10 +4,88 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 /**
- * Get the fic data for a fic by ID
+ * Get a fic summary by fic ID. A fic summary is only the details provided before clicking a fic
  */
-router.get('/:id', (req, res) => {
-  console.log("In get route")
+router.get('/work/summary/:id', (req, res) => {
+  const id = req.params.id;
+
+  axios({
+    method: 'GET',
+    url: `https://archiveofourown.org/works/${id}?view_adult=true&view_full_work=true`
+  }).then((response) => {
+    // Scraping using cheerio
+    const $ = cheerio.load(response.data);
+      
+    // Grabbing the fic title
+    // using .trim will get rid of newline characters in the text
+    const title = $('.title.heading').text().trim();
+    
+    // Grabbing other info
+    const author = $('.byline.heading').text().trim();
+    const rating = $('.rating.tags ul').text().trim();
+    const language = $('dd.language').text().trim();
+    const series = $('.position a:first').text().trim();
+    const warnings = [];
+    $('.warning.tags li').each((i, el) => {
+      warnings.push($(el).text().trim());
+    })
+    const categories = [];
+    $('.category.tags li').each((i, el) => {
+      categories.push($(el).text().trim());
+    })
+    const fandoms = [];
+    $('.fandom.tags li').each((i, el) => {
+      fandoms.push($(el).text().trim());
+    })
+    const relationships = [];
+    $('.relationship.tags li').each((i, el) => {
+      relationships.push($(el).text().trim());
+    })
+    const characters = [];
+    $('.character.tags li').each((i, el) => {
+      characters.push($(el).text().trim());
+    })
+    const tags = [];
+    $('.freeform.tags li').each((i, el) => {
+      tags.push($(el).text().trim());
+    })
+    const stats = {};
+    $('.stats dt').each((i, el) => {
+      stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
+    })
+    const summary = [];
+    $('#workskin .preface.group:first').find('.summary.module p').each((i , el) => {
+      summary.push($(el).text().trim());
+    })
+    
+    // Assemble summary
+    const ficSummary = {
+      title, 
+      author, 
+      rating,
+      warnings,
+      categories,
+      fandoms,
+      relationships, 
+      characters,
+      tags,
+      language,
+      series,
+      stats,
+      summary
+    }
+
+    res.send(ficSummary);
+
+  }).catch((error) => {
+    res.sendStatus(500);
+  })
+})
+
+/**
+ * Get all fic data for a fic by ID, this includes entire text body
+ */
+router.get('/work/all/:id', (req, res) => {
   const id = req.params.id;
 
   axios({
@@ -128,10 +206,14 @@ router.get('/:id', (req, res) => {
     res.send(fic);
 
   }).catch((error) => {
-    console.log("Error in GET /fic/id :", error);
     res.sendStatus(500);
   })
 });
+
+
+
+
+
 
 
 module.exports = router;
