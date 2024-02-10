@@ -54,7 +54,7 @@ router.get('/work/summary/:id', (req, res) => {
       })
       const stats = {};
       $('.stats dt').each((i, el) => {
-        stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
+        stats[($(el).text().trim().slice(0, -1)).toLowerCase()] = $(el).next().text().trim();
       })
       const summary = [];
       $('#workskin .preface.group:first').find('.summary.module p').each((i, el) => {
@@ -63,7 +63,7 @@ router.get('/work/summary/:id', (req, res) => {
 
       // Assemble summary
       const ficSummary = {
-        work_id: id,
+        id,
         title,
         author,
         rating,
@@ -139,7 +139,7 @@ router.get('/work/:id', (req, res) => {
       })
       const stats = {};
       $('.stats dt').each((i, el) => {
-        stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
+        stats[($(el).text().trim().slice(0, -1)).toLowerCase()] = $(el).next().text().trim();
       })
       const summary = [];
       $('#workskin .preface.group:first').find('.summary.module p').each((i, el) => {
@@ -158,7 +158,7 @@ router.get('/work/:id', (req, res) => {
 
       // Creating a fic object
       const fic = {
-        work_id: id,
+        id,
         title,
         author,
         rating,
@@ -252,6 +252,66 @@ router.get('/work/:id', (req, res) => {
 
 
 /**
+ * Get series info, including an array of work ids that belong to the series
+ */
+router.get('/series/:id', (req, res) => {
+  const id = req.params.id;
+
+  axios({
+    method: 'GET',
+    url: `https://archiveofourown.org/series/${id}`
+  })
+    .then((response) => {
+      const $ = cheerio.load(response.data);
+
+      // Series object
+      const series = {
+        id,
+        name: '',
+        creator: '',
+        date_begun: '',
+        date_updated: '',
+        description: [],
+        stats: {},
+        works: []
+      }
+
+      series.name = $('h2.heading').text().trim();
+
+      $('.series.meta.group').children().each((i, elem) => {
+        if(i == 1){
+          series.creator = $(elem).text().trim();
+        } else if(i == 3){
+          series.date_begun = $(elem).text().trim();
+        } else if(i == 5){
+          series.date_updated = $(elem).text().trim();
+        } else if(i == 7){
+          $(elem).find('blockquote.userstuff').children().each((j, line) => {
+            series.description.push($(line).text().trim());
+          })
+        }
+      })
+
+      $('dl.stats:first').children().each((i, elem) => {
+        if(elem.name == 'dt'){
+          series.stats[($(elem).text().trim().slice(0, -1)).toLowerCase()] = $(elem).next().text().trim();
+        }
+      })
+
+      $('ul.series.work.index.group').children().each((i, elem) => {
+        series.works.push(elem.attribs.id.substring(5));
+      })
+      
+      res.send(series);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    })
+})
+
+
+/**
  * Get a user's profile details by username
  */
 router.get('/user/profile/:username', (req, res) => {
@@ -266,7 +326,7 @@ router.get('/user/profile/:username', (req, res) => {
 
       const pseuds = [];
       let date_joined;
-      let user_id;
+      let id;
       let location;
       let birthday;
 
@@ -282,7 +342,7 @@ router.get('/user/profile/:username', (req, res) => {
           date_joined = $(elem).text().trim();
           // user id
         } else if (i == 5) {
-          user_id = $(elem).text().trim();
+          id = $(elem).text().trim();
           // location
         } else if (i == 7) {
           location = $(elem).text().trim();
@@ -293,8 +353,8 @@ router.get('/user/profile/:username', (req, res) => {
       })
 
       const user = {
+        id,
         username,
-        user_id,
         pseuds,
         date_joined,
         location,
@@ -306,18 +366,7 @@ router.get('/user/profile/:username', (req, res) => {
         user.bio.push($(elem).text().trim());
       })
 
-      axios({
-        method: 'GET',
-        url: `https://archiveofourown.org/users/${username}/works`
-      })
-        .then((response) => {
-          // Each work on the page is a list element. We can loop thru to grab each work
-          $('ol.work.index.group').children().each((i, elem) => {
-            console.log(elem.attribs.id)
-            user.works.push(elem.attribs.id.substring(5));
-          })
-          res.send(user);
-        })
+      res.send(user);
     })
     .catch(() => {
       res.sendStatus(500);
