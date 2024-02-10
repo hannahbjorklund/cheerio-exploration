@@ -12,75 +12,78 @@ router.get('/work/summary/:id', (req, res) => {
   axios({
     method: 'GET',
     url: `https://archiveofourown.org/works/${id}?view_adult=true&view_full_work=true`
-  }).then((response) => {
-    // Scraping using cheerio
-    const $ = cheerio.load(response.data);
-      
-    // Grabbing the fic title
-    // using .trim will get rid of newline characters in the text
-    const title = $('.title.heading').text().trim();
-    
-    // Grabbing other info
-    const author = $('.byline.heading').text().trim();
-    const rating = $('.rating.tags ul').text().trim();
-    const language = $('dd.language').text().trim();
-    const series = $('.position a:first').text().trim();
-    const warnings = [];
-    $('.warning.tags li').each((i, el) => {
-      warnings.push($(el).text().trim());
-    })
-    const categories = [];
-    $('.category.tags li').each((i, el) => {
-      categories.push($(el).text().trim());
-    })
-    const fandoms = [];
-    $('.fandom.tags li').each((i, el) => {
-      fandoms.push($(el).text().trim());
-    })
-    const relationships = [];
-    $('.relationship.tags li').each((i, el) => {
-      relationships.push($(el).text().trim());
-    })
-    const characters = [];
-    $('.character.tags li').each((i, el) => {
-      characters.push($(el).text().trim());
-    })
-    const tags = [];
-    $('.freeform.tags li').each((i, el) => {
-      tags.push($(el).text().trim());
-    })
-    const stats = {};
-    $('.stats dt').each((i, el) => {
-      stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
-    })
-    const summary = [];
-    $('#workskin .preface.group:first').find('.summary.module p').each((i , el) => {
-      summary.push($(el).text().trim());
-    })
-    
-    // Assemble summary
-    const ficSummary = {
-      work_id: id,
-      title, 
-      author, 
-      rating,
-      warnings,
-      categories,
-      fandoms,
-      relationships, 
-      characters,
-      tags,
-      language,
-      series,
-      stats,
-      summary
-    }
-
-    res.send(ficSummary);
-
-  }).catch((error) => {
-    res.sendStatus(500);
   })
+    .then((response) => {
+      // Scraping using cheerio
+      const $ = cheerio.load(response.data);
+
+      // Grabbing the fic title
+      // using .trim will get rid of newline characters in the text
+      const title = $('.title.heading').text().trim();
+
+      // Grabbing other info
+      const author = $('.byline.heading').text().trim();
+      const rating = $('.rating.tags ul').text().trim();
+      const language = $('dd.language').text().trim();
+      const series = $('.position a:first').text().trim();
+
+      const warnings = [];
+      $('.warning.tags li').each((i, el) => {
+        warnings.push($(el).text().trim());
+      })
+      const categories = [];
+      $('.category.tags li').each((i, el) => {
+        categories.push($(el).text().trim());
+      })
+      const fandoms = [];
+      $('.fandom.tags li').each((i, el) => {
+        fandoms.push($(el).text().trim());
+      })
+      const relationships = [];
+      $('.relationship.tags li').each((i, el) => {
+        relationships.push($(el).text().trim());
+      })
+      const characters = [];
+      $('.character.tags li').each((i, el) => {
+        characters.push($(el).text().trim());
+      })
+      const tags = [];
+      $('.freeform.tags li').each((i, el) => {
+        tags.push($(el).text().trim());
+      })
+      const stats = {};
+      $('.stats dt').each((i, el) => {
+        stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
+      })
+      const summary = [];
+      $('#workskin .preface.group:first').find('.summary.module p').each((i, el) => {
+        summary.push($(el).text().trim());
+      })
+
+      // Assemble summary
+      const ficSummary = {
+        work_id: id,
+        title,
+        author,
+        rating,
+        warnings,
+        categories,
+        fandoms,
+        relationships,
+        characters,
+        tags,
+        language,
+        series,
+        stats,
+        summary
+      }
+
+      res.send(ficSummary);
+
+    })
+    .catch(() => {
+      res.sendStatus(500);
+    })
 })
 
 /**
@@ -92,124 +95,157 @@ router.get('/work/all/:id', (req, res) => {
   axios({
     method: 'GET',
     url: `https://archiveofourown.org/works/${id}?view_adult=true&view_full_work=true`
-  }).then((response) => {
+  })
+    .then((response) => {
 
-    // Scraping using cheerio
-    const $ = cheerio.load(response.data);
-    
-    // Grabbing the fic title
-    // using .trim will get rid of newline characters in the text
-    const title = $('.title.heading').text().trim();
-    
-    // Grabbing other info
-    const author = $('.byline.heading').text().trim();
-    const rating = $('.rating.tags ul').text().trim();
-    const language = $('dd.language').text().trim();
-    const series = $('.position a:first').text().trim();
-    const warnings = [];
-    $('.warning.tags li').each((i, el) => {
-      warnings.push($(el).text().trim());
-    })
-    const categories = [];
-    $('.category.tags li').each((i, el) => {
-      categories.push($(el).text().trim());
-    })
-    const fandoms = [];
-    $('.fandom.tags li').each((i, el) => {
-      fandoms.push($(el).text().trim());
-    })
-    const relationships = [];
-    $('.relationship.tags li').each((i, el) => {
-      relationships.push($(el).text().trim());
-    })
-    const characters = [];
-    $('.character.tags li').each((i, el) => {
-      characters.push($(el).text().trim());
-    })
-    const tags = [];
-    $('.freeform.tags li').each((i, el) => {
-      tags.push($(el).text().trim());
-    })
-    const stats = {};
-    $('.stats dt').each((i, el) => {
-      stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
-    })
-    const summary = [];
-    $('#workskin .preface.group:first').find('.summary.module p').each((i , el) => {
-      summary.push($(el).text().trim());
-    })
-    const notes = [];
-    $('#workskin .preface.group:first').find('.notes.module p').each((i, el) => {
-      notes.push($(el).text().trim());
-    })
+      // Scraping using cheerio
+      const $ = cheerio.load(response.data);
 
-    // Creating a fic object
-    const fic = {
-      work_id: id,
-      title, 
-      author, 
-      rating,
-      warnings,
-      categories,
-      fandoms,
-      relationships, 
-      characters,
-      tags,
-      language,
-      series,
-      stats,
-      summary,
-      notes, 
-      chapters: []
-    };
-    
-    // For each chapter div
-    $('div#chapters').children().each((i, el) => {
-      // Each chapter div has 2 unique children, preface group and userstuff
-      // Create a chapter object
-      const chapter = {
-        chapter_title: '',
-        chapter_summary: [],
-        chapter_notes_start: [],
-        chapter_notes_end: [],
-        chapter_text: []
-      }
+      // Grabbing the fic title
+      // using .trim will get rid of newline characters in the text
+      const title = $('.title.heading').text().trim();
 
-      $(el).children().each((j, chil) => {
-        // In the first preface group, scrape chapter title, summary, and notes
-        if (j==0){
-          chapter.chapter_title = $(chil).find('.title').text().trim();
+      // Grabbing other info
+      const author = $('.byline.heading').text().trim();
+      const rating = $('.rating.tags ul').text().trim();
+      const language = $('dd.language').text().trim();
+      const series = $('.position a:first').text().trim();
 
-          $(chil).find('.summary.module blockquote p').each((k, line) => {
-            chapter.chapter_summary.push($(line).text().trim());
+      const warnings = [];
+      $('.warning.tags li').each((i, el) => {
+        warnings.push($(el).text().trim());
+      })
+      const categories = [];
+      $('.category.tags li').each((i, el) => {
+        categories.push($(el).text().trim());
+      })
+      const fandoms = [];
+      $('.fandom.tags li').each((i, el) => {
+        fandoms.push($(el).text().trim());
+      })
+      const relationships = [];
+      $('.relationship.tags li').each((i, el) => {
+        relationships.push($(el).text().trim());
+      })
+      const characters = [];
+      $('.character.tags li').each((i, el) => {
+        characters.push($(el).text().trim());
+      })
+      const tags = [];
+      $('.freeform.tags li').each((i, el) => {
+        tags.push($(el).text().trim());
+      })
+      const stats = {};
+      $('.stats dt').each((i, el) => {
+        stats[($(el).text().trim().slice(0, -1))] = $(el).next().text().trim();
+      })
+      const summary = [];
+      $('#workskin .preface.group:first').find('.summary.module p').each((i, el) => {
+        summary.push($(el).text().trim());
+      })
+      const notes = [];
+      $('#workskin .preface.group:first').find('.notes.module blockquote').children().each((i, el) => {
+        if(el.name == 'ul'){
+          $(el).find('li').each((j, li) => {
+            notes.push($(li).text().trim());
           })
-
-          $(chil).find('.notes.module blockquote p').each((k, line) => {
-            chapter.chapter_notes_start.push($(line).text().trim());
-          })
-          
-          // In the chapter body, scrape paragraphs
-        } else if(j == 1){
-          $(chil).find('p').each((k, line) => {
-            chapter.chapter_text.push($(line).text().trim());
-          });
-          
-          // If there are more than two children, then there is an end of chapter notes section we need to grab
         } else {
-          $(chil).find('.end.notes.module blockquote p').each((k, line) => {
-            chapter.chapter_notes_end.push($(line).text().trim());
-          });
+          notes.push($(el).text().trim());
         }
       })
-      fic.chapters.push(chapter);
+
+      // Creating a fic object
+      const fic = {
+        work_id: id,
+        title,
+        author,
+        rating,
+        warnings,
+        categories,
+        fandoms,
+        relationships,
+        characters,
+        tags,
+        language,
+        series,
+        stats,
+        summary,
+        notes,
+        chapters: []
+      };
+
+      // Fics with only one chapter have a different structure than fics with multiple chapters, so we have 
+      //  to scrape them differently
+      if (fic.stats.Chapters === '1/1') {
+
+        // Create chapter object
+        const chapter = {
+          chapter_title: '',
+          chapter_summary: [],
+          chapter_notes_start: [],
+          chapter_notes_end: [],
+          chapter_text: []
+        }
+
+        $('div#chapters div.userstuff p').each((i, elem) => {
+          chapter.chapter_text.push($(elem).text().trim());
+        })        
+
+        fic.chapters.push(chapter);
+
+      } else {
+
+        // For each chapter div
+        $('div#chapters').children().each((i, el) => {
+
+          // Create a chapter object
+          const chapter = {
+            chapter_title: '',
+            chapter_summary: [],
+            chapter_notes_start: [],
+            chapter_notes_end: [],
+            chapter_text: []
+          }
+
+          $(el).children().each((j, chil) => {
+            // In the first preface group, scrape chapter title, summary, and notes
+            if (j == 0) {
+              chapter.chapter_title = $(chil).find('.title').text().trim();
+
+              $(chil).find('.summary.module blockquote p').each((k, line) => {
+                chapter.chapter_summary.push($(line).text().trim());
+              })
+              
+              $(chil).find('.notes.module blockquote').children().each((k, line) => {
+                
+                chapter.chapter_notes_start.push($(line).text().trim());
+              })
+
+              // In the chapter body, scrape paragraphs
+            } else if (j == 1) {
+              $(chil).find('p').each((k, line) => {
+                chapter.chapter_text.push($(line).text().trim());
+              });
+
+              // If there are more than two children, then there is an end of chapter notes section we need to grab
+            } else {
+              $(chil).find('.end.notes.module blockquote p').each((k, line) => {
+                chapter.chapter_notes_end.push($(line).text().trim());
+              });
+            }
+          })
+          fic.chapters.push(chapter);
+        })
+      }
+
+      // Retrieved all fic data and formatted the object. Time to send!
+      res.send(fic);
+
     })
-
-    // Retrieved all fic data and formatted object. Time to send!
-    res.send(fic);
-
-  }).catch((error) => {
-    res.sendStatus(500);
-  })
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    })
 });
 
 /**
@@ -221,53 +257,56 @@ router.get('/user/:username', (req, res) => {
   axios({
     method: 'GET',
     url: `https://archiveofourown.org/users/${username}/profile`
-  }).then((response) => {
-    const $ = cheerio.load(response.data);
-
-    const pseuds = [];
-    let date_joined;
-    let user_id;
-    let location;
-    let birthday;
-
-    $('.user.home.profile .wrapper .meta').children().each((i, elem) => {
-      // Grab pseuds
-      if(i == 1){
-        console.log($(elem).find('a').text().trim());
-        $(elem).find('a').each((j, chil) => {
-          pseuds.push($(chil).text().trim());
-        })
-        // Date joined
-      } else if(i == 3){
-        date_joined = $(elem).text().trim();
-        // user id
-      } else if(i == 5){
-        user_id = $(elem).text().trim();
-      } else if(i == 7){
-        location = $(elem).text().trim();
-      } else if(i ==9){
-        birthday = $(elem).text().trim();
-      }
-    })
-
-    const user = {
-      username,
-      user_id,
-      pseuds,
-      date_joined,
-      location,
-      birthday,
-      bio: []
-    }
-
-    $('.bio.module .userstuff p').each((i, elem) => {
-      user.bio.push($(elem).text().trim());
-    })
-    
-    res.send(user);
-  }).catch((error) => {
-    res.sendStatus(500);
   })
+    .then((response) => {
+      const $ = cheerio.load(response.data);
+
+      const pseuds = [];
+      let date_joined;
+      let user_id;
+      let location;
+      let birthday;
+
+      $('.user.home.profile .wrapper .meta').children().each((i, elem) => {
+        // Grab pseuds
+        if (i == 1) {
+          console.log($(elem).find('a').text().trim());
+          $(elem).find('a').each((j, chil) => {
+            pseuds.push($(chil).text().trim());
+          })
+          // Date joined
+        } else if (i == 3) {
+          date_joined = $(elem).text().trim();
+          // user id
+        } else if (i == 5) {
+          user_id = $(elem).text().trim();
+        } else if (i == 7) {
+          location = $(elem).text().trim();
+        } else if (i == 9) {
+          birthday = $(elem).text().trim();
+        }
+      })
+
+      const user = {
+        username,
+        user_id,
+        pseuds,
+        date_joined,
+        location,
+        birthday,
+        bio: [],
+        works: []
+      }
+
+      $('.bio.module .userstuff p').each((i, elem) => {
+        user.bio.push($(elem).text().trim());
+      })
+
+      res.send(user);
+    })
+    .catch(() => {
+      res.sendStatus(500);
+    })
 })
 
 
