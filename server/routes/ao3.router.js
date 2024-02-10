@@ -89,7 +89,7 @@ router.get('/work/summary/:id', (req, res) => {
 /**
  * Get all fic data for a fic by ID, this includes entire text body
  */
-router.get('/work/all/:id', (req, res) => {
+router.get('/work/:id', (req, res) => {
   const id = req.params.id;
 
   axios({
@@ -145,7 +145,7 @@ router.get('/work/all/:id', (req, res) => {
       })
       const notes = [];
       $('#workskin .preface.group:first').find('.notes.module blockquote').children().each((i, el) => {
-        if(el.name == 'ul'){
+        if (el.name == 'ul') {
           $(el).find('li').each((j, li) => {
             notes.push($(li).text().trim());
           })
@@ -189,7 +189,7 @@ router.get('/work/all/:id', (req, res) => {
 
         $('div#chapters div.userstuff p').each((i, elem) => {
           chapter.chapter_text.push($(elem).text().trim());
-        })        
+        })
 
         fic.chapters.push(chapter);
 
@@ -215,9 +215,9 @@ router.get('/work/all/:id', (req, res) => {
               $(chil).find('.summary.module blockquote p').each((k, line) => {
                 chapter.chapter_summary.push($(line).text().trim());
               })
-              
+
               $(chil).find('.notes.module blockquote').children().each((k, line) => {
-                
+
                 chapter.chapter_notes_start.push($(line).text().trim());
               })
 
@@ -251,7 +251,7 @@ router.get('/work/all/:id', (req, res) => {
 /**
  * Get a user's profile details by username
  */
-router.get('/user/:username', (req, res) => {
+router.get('/user/profile/:username', (req, res) => {
   const username = req.params.username;
 
   axios({
@@ -268,7 +268,7 @@ router.get('/user/:username', (req, res) => {
       let birthday;
 
       $('.user.home.profile .wrapper .meta').children().each((i, elem) => {
-        // Grab pseuds
+        // Grab pseuds, aka an array of other pennames, if any
         if (i == 1) {
           console.log($(elem).find('a').text().trim());
           $(elem).find('a').each((j, chil) => {
@@ -280,8 +280,10 @@ router.get('/user/:username', (req, res) => {
           // user id
         } else if (i == 5) {
           user_id = $(elem).text().trim();
+          // location
         } else if (i == 7) {
           location = $(elem).text().trim();
+          // birthday
         } else if (i == 9) {
           birthday = $(elem).text().trim();
         }
@@ -294,17 +296,59 @@ router.get('/user/:username', (req, res) => {
         date_joined,
         location,
         birthday,
-        bio: [],
-        works: []
+        bio: []
       }
 
       $('.bio.module .userstuff p').each((i, elem) => {
         user.bio.push($(elem).text().trim());
       })
 
-      res.send(user);
+      axios({
+        method: 'GET',
+        url: `https://archiveofourown.org/users/${username}/works`
+      })
+        .then((response) => {
+          // Each work on the page is a list element. We can loop thru to grab each work
+          $('ol.work.index.group').children().each((i, elem) => {
+            console.log(elem.attribs.id)
+            user.works.push(elem.attribs.id.substring(5));
+          })
+          res.send(user);
+        })
     })
     .catch(() => {
+      res.sendStatus(500);
+    })
+})
+
+/**
+ * Get an array of a user's works' ids
+ */
+router.get('/user/works/:username', (req, res) => {
+  const username = req.params.username;
+
+  axios({
+    method: 'GET',
+    url: `https://archiveofourown.org/users/${username}/works`
+  })
+    .then((response) => {
+      const $ = cheerio.load(response.data);
+
+      const userWorks = {
+        username,
+        works: []
+      }
+
+      // Each work on the page is a list element. We can loop thru to grab each work
+      $('ol.work.index.group').children().each((i, elem) => {
+        const work_id = elem.attribs.id.substring(5);
+        userWorks.works.push(work_id);
+      })
+
+      res.send(userWorks);
+    })
+    .catch((error) => {
+      console.log(error);
       res.sendStatus(500);
     })
 })
