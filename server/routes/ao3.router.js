@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const cheerio = require('cheerio');
 
+
 /**
  * Get a fic summary by fic ID. A fic summary is only the details provided before clicking a fic
  */
@@ -85,6 +86,7 @@ router.get('/work/summary/:id', (req, res) => {
       res.sendStatus(500);
     })
 })
+
 
 /**
  * Get all fic data for a fic by ID, this includes entire text body
@@ -248,6 +250,7 @@ router.get('/work/:id', (req, res) => {
     })
 });
 
+
 /**
  * Get a user's profile details by username
  */
@@ -321,6 +324,7 @@ router.get('/user/profile/:username', (req, res) => {
     })
 })
 
+
 /**
  * Get an array of a user's works' ids
  */
@@ -335,7 +339,6 @@ router.get('/user/works/:username', (req, res) => {
       const $ = cheerio.load(response.data);
 
       const userWorks = {
-        username,
         works: []
       }
 
@@ -353,5 +356,36 @@ router.get('/user/works/:username', (req, res) => {
     })
 })
 
+
+/**
+ * Get an array of a user's bookmarks' ids
+ */
+router.get('/user/bookmarks/:username', (req, res) => {
+  const username = req.params.username;
+
+  axios({
+    method: 'GET',
+    url: `https://archiveofourown.org/users/${username}/bookmarks`
+  })
+    .then((response) => {
+      const $ = cheerio.load(response.data);
+
+      const userBookmarks = {
+        bookmarks: []
+      }
+
+      // Each work on the page is a list element. We can loop thru to grab each work
+      $('ol.bookmark.index.group').children().each((i, elem) => {
+        const work_id = elem.attribs.id.substring(9);
+        userBookmarks.bookmarks.push(work_id);
+      })
+
+      res.send(userBookmarks);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    })
+})
 
 module.exports = router;
