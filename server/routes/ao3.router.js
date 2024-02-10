@@ -420,4 +420,36 @@ router.get('/user/gifts/:username', (req, res) => {
 })
 
 
+/**
+ * Get an array of a user's series ids
+ */
+router.get('/user/series/:username', (req, res) => {
+  const username = req.params.username;
+
+  axios({
+    method: 'GET',
+    url: `https://archiveofourown.org/users/${username}/series`
+  })
+    .then((response) => {
+      const $ = cheerio.load(response.data);
+
+      const userSeries = {
+        series: []
+      }
+
+      $('ul.series.index.group').children().each((i, elem) => {
+        // These are not work ids! Series can contain multiple works and have an id of their own
+        const series_id = elem.attribs.id.substring(7);
+        userSeries.series.push(series_id);
+      })
+
+      res.send(userSeries);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    })
+})
+
+
 module.exports = router;
