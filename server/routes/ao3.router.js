@@ -358,7 +358,7 @@ router.get('/user/works/:username', (req, res) => {
 
 
 /**
- * Get an array of a user's bookmarks' ids
+ * Get an array of a user's bookmarks' work ids
  */
 router.get('/user/bookmarks/:username', (req, res) => {
   const username = req.params.username;
@@ -387,5 +387,37 @@ router.get('/user/bookmarks/:username', (req, res) => {
       res.sendStatus(500);
     })
 })
+
+
+/**
+ * Get an array of a user's gifts' work ids
+ */
+router.get('/user/gifts/:username', (req, res) => {
+  const username = req.params.username;
+
+  axios({
+    method: 'GET',
+    url: `https://archiveofourown.org/users/${username}/gifts`
+  })
+    .then((response) => {
+      const $ = cheerio.load(response.data);
+
+      const userGifts = {
+        gifts: []
+      }
+
+      $('ul.gift.work.index.group').children().each((i, elem) => {
+        const work_id = elem.attribs.id.substring(5);
+        userGifts.gifts.push(work_id);
+      })
+
+      res.send(userGifts);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    })
+})
+
 
 module.exports = router;
