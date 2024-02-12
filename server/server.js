@@ -4,7 +4,7 @@ require('dotenv').config();
 const PORT = process.env.PORT || 5001;
 
 // Route Includes
-const Router = require('./routes/ao3.router.js');
+const Router = require('./routes/ao3.router');
 
 // Express Middleware
 app.use(express.json());
@@ -12,7 +12,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('build'));
 
 // Routes
-app.use('/ao3', Router);
+app.use('/api/ao3', Router);
 
 // Listen Server & Port
 app.listen(PORT, () => {

@@ -8,6 +8,7 @@ const cheerio = require('cheerio');
  * Get a fic summary by fic ID. A fic summary is only the details provided before clicking a fic
  */
 router.get('/work/summary/:id', (req, res) => {
+  console.log("In GET /ao3/work/summary/:id")
   const id = req.params.id;
 
   axios({

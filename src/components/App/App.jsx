@@ -20,12 +20,17 @@ function App() {
     // Send a request to the server
     axios({
       method: 'GET',
-      url: `/fic/${ficID}`
+      url: `/api/ao3/work/summary/${ficID}`
     }).then((result) => {
-      console.log(result)
+      console.log(result.data)
     })
+    setInputURL('');
   }
 
+  /**
+   * When the user clicks the clear button, will clear the form input field
+   * @param {*} e event
+   */
   const handleClear = (e) => {
     e.preventDefault();
     setInputURL('');
