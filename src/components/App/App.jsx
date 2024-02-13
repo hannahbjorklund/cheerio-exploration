@@ -53,7 +53,7 @@ function App() {
           onChange = {(e) => setInputURL(e.target.value)}
         />
         <Button type='submit' variant='contained'>Submit</Button>
-        <Button variant='outlined' onClick={handleClear}>Clear</Button>
+        <Button sx={{marginLeft: '0.5em'}} variant='outlined' onClick={handleClear}>Clear</Button>
       </form>
     </div>
   );
