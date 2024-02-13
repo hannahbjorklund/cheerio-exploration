@@ -14,8 +14,14 @@ function App() {
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Trim the id from the provided url, the id will be between works/id/chapters
-    const ficID = inputURL.substring(inputURL.indexOf('works/') + 6, inputURL.indexOf('/chapters'));
+    // Trim the id from the provided url, the id will be between works/id/chapters if the work has multiple chapters,
+    //  or after works/ if it is a single chapter work
+    let ficID;
+    if(inputURL.includes("/chapters")){
+      ficID = inputURL.substring(inputURL.indexOf('works/') + 6, inputURL.indexOf('/chapters'));
+    } else {
+      ficID = inputURL.substring(inputURL.indexOf('works') + 6);
+    }
     
     // Send a request to the server
     axios({
