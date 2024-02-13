@@ -26,7 +26,7 @@ function App() {
     // Send a request to the server
     axios({
       method: 'GET',
-      url: `/api/ao3/work/summary/${ficID}`
+      url: `/api/ao3/work/${ficID}`
     }).then((result) => {
       console.log(result.data)
     })

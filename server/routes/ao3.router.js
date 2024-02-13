@@ -8,11 +8,11 @@ const cheerio = require('cheerio');
  * Get a fic summary by fic ID. A fic summary is only the details provided before clicking a fic
  */
 router.get('/work/summary/:id', (req, res) => {
-  console.log("In GET /ao3/work/summary/:id")
   const id = req.params.id;
 
   axios({
     method: 'GET',
+    // Viewing adult and full work will allow us to scrape an entire fic without having to navigate to different pages
     url: `https://archiveofourown.org/works/${id}?view_adult=true&view_full_work=true`
   })
     .then((response) => {
@@ -176,11 +176,11 @@ router.get('/work/:id', (req, res) => {
         notes,
         chapters: []
       };
-
+      
       // Fics with only one chapter have a different structure than fics with multiple chapters, so we have 
       //  to scrape them differently
-      if (fic.stats.Chapters === '1/1') {
-
+      if (fic.stats.chapters === '1/1') {
+        console.log("Test")
         // Create chapter object
         const chapter = {
           chapter_title: '',
@@ -191,6 +191,7 @@ router.get('/work/:id', (req, res) => {
         }
 
         $('div#chapters div.userstuff p').each((i, elem) => {
+          console.log(elem.name)
           chapter.chapter_text.push($(elem).text().trim());
         })
 
