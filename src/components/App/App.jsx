@@ -57,6 +57,7 @@ function App() {
         <Button type='submit' variant='contained'>Submit</Button>
         <Button sx={{marginLeft: '0.5em'}} variant='outlined' onClick={handleClear}>Clear</Button>
       </form>
+      <hr/>
       <div className = 'pre-text'>
         <h1>{ficData.title || ""}</h1>
         {ficData.author && <h2>by {ficData.author}</h2>}
