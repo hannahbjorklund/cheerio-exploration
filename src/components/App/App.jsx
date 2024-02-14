@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from '@mui/material';
+import { Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 import axios from 'axios';
 
 import './App.css';
@@ -60,16 +65,33 @@ function App() {
       <div className = 'pre-text'>
         <h1>{ficData.title || ""}</h1>
         {ficData.author && <h2>by {ficData.author}</h2>}
+        {//ficData.stats && 
+          <Accordion sx={{fontFamily: 'Open Sans',
+          backgroundColor: '#303030',
+          color: 'antiquewhite',
+          fontSize: '18px'}}>
+            <AccordionSummary
+              expandIcon={<ExpandMore style={{color: 'antiquewhite'}}/>}
+              aria-controls='panel1-content'
+              id='panel1-header'
+            >
+              Work Stats
+            </AccordionSummary>
+            <AccordionDetails sx={{backgroundColor: '#343434'}}>
+              Test
+            </AccordionDetails>
+          </Accordion>
+        }
       </div>
       <div className = 'text-body'>
-        {ficData && ficData.chapters.map((x) => {
+        {ficData && ficData.chapters.map((x, i) => {
           return (
-            <h3 className = 'chap-header'>
+            <h3 id={i} className = 'chap-header'>
               {x.chapter_title}
               <hr/>
               {
-                x.chapter_text.map((y) => {
-                  return <p className = 'chap-line'>{y}</p>
+                x.chapter_text.map((y, j) => {
+                  return <p id={j} className = 'chap-line'>{y}</p>
                 })
               }
             </h3>
