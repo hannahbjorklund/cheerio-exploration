@@ -6,6 +6,7 @@ import './App.css';
 
 function App() {
   const [inputURL, setInputURL] = useState('');
+  const [ficData, setFicData] = useState('');
 
   /**
    * Handles form submission when user clicks submit button. Will strip the fic ID from the given url and
@@ -28,7 +29,8 @@ function App() {
       method: 'GET',
       url: `/api/ao3/work/${ficID}`
     }).then((result) => {
-      console.log(result.data)
+        setFicData(result.data);
+        console.log(ficData);
     })
     setInputURL('');
   }
@@ -55,6 +57,25 @@ function App() {
         <Button type='submit' variant='contained'>Submit</Button>
         <Button sx={{marginLeft: '0.5em'}} variant='outlined' onClick={handleClear}>Clear</Button>
       </form>
+      <div className = 'pre-text'>
+        <h1>{ficData.title || ""}</h1>
+        {ficData.author && <h2>by {ficData.author}</h2>}
+      </div>
+      <div className = 'text-body'>
+        {ficData && ficData.chapters.map((x) => {
+          return (
+            <h3 className = 'chap-header'>
+              {x.chapter_title}
+              <hr/>
+              {
+                x.chapter_text.map((y) => {
+                  return <p className = 'chap-line'>{y}</p>
+                })
+              }
+            </h3>
+          )
+        })}
+      </div>
     </div>
   );
 }
