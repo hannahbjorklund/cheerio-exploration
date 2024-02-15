@@ -100,10 +100,6 @@ form {
   line-height: 1.7em;
 }
 
-.chap-line.letters {
-  word-wrap:break-word;
-}
-
 @font-face {
   font-family: "Open Sans";
   src: url('OpenSans-Light.ttf');

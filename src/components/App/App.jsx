@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   Button,
   Accordion,
@@ -15,6 +15,7 @@ import "./App.css";
 function App() {
   const [inputURL, setInputURL] = useState("");
   const [ficData, setFicData] = useState("");
+  const headerRef = useRef(null);
 
   /**
    * Handles form submission when user clicks submit button. Will strip the fic ID from the given url and
@@ -55,10 +56,9 @@ function App() {
     setInputURL("");
   };
 
-
   return (
     <div className="container">
-      <div className="site-header">
+      <div className="site-header" ref={headerRef}>
         <h1>Import an AO3 work:</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
@@ -135,7 +135,7 @@ function App() {
       <br />
       {ficData && <hr />}
       <div className="text-body">
-        <HideAppBar/>
+        <HideAppBar headerRef={headerRef}/>
         {ficData &&
           ficData.chapters.map((x, i) => {
             return (
