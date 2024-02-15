@@ -9,7 +9,7 @@ body {
   margin: 0px;
   background-color: #282828;
   color:antiquewhite;
-  width: auto;
+  width: 100%;
 }
 
 img {
@@ -67,6 +67,7 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 100%;
 }
 
 .title-group {
@@ -80,11 +81,13 @@ form {
   display: flex;
   flex-direction: column;
   width: 100%;
+  word-wrap: break-word;
 }
 
 .title {
   margin-top: 0.5em;
   margin-bottom: 0;
+  text-align: center;
 }
 
 .chap-header {
@@ -95,6 +98,10 @@ form {
   font-size: 19px;
   letter-spacing: 0.5px;
   line-height: 1.7em;
+}
+
+.chap-line.letters {
+  word-wrap:break-word;
 }
 
 @font-face {
