@@ -135,7 +135,7 @@ function App() {
       <br />
       {ficData && <hr />}
       <div className="text-body">
-        <HideAppBar headerRef={headerRef}/>
+        <HideAppBar chapters={ficData.chapters} headerRef={headerRef}/>
         {ficData &&
           ficData.chapters.map((x, i) => {
             return (

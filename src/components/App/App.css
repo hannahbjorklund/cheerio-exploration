@@ -58,6 +58,11 @@ form {
   justify-content: space-evenly;
 }
 
+.menu-item{
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
 .stats-container {
   display: flex;
   justify-content: space-between;
