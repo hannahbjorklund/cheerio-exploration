@@ -4,7 +4,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  useScrollTrigger,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import axios from "axios";
@@ -140,12 +139,12 @@ function App() {
           ficData.chapters.map((x, i) => {
             return (
               <>
-                <h2 id={i} className="chap-header">
+                <h2 id={i+1} className={`chap-${i+1}-header`}>
                   {x.chapter_title}
                 </h2>
                 {x.chapter_text.map((y, j) => {
                   return (
-                    <p id={j} className="chap-line">
+                    <p id={j+1} className="chap-line">
                       {y}
                     </p>
                   );

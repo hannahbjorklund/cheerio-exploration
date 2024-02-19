@@ -1,3 +1,5 @@
+/* App */
+
 html,
 body,
 #react-root {
@@ -20,7 +22,6 @@ img {
 .container {
   padding: 20px;
 }
-
 
 input {
   margin: 10px;
@@ -58,9 +59,9 @@ form {
   justify-content: space-evenly;
 }
 
+
 .menu-item{
-  overflow-wrap: break-word;
-  word-wrap: break-word;
+  white-space: normal;
 }
 
 .stats-container {
