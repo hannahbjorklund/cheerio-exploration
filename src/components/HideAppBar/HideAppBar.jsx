@@ -8,6 +8,8 @@ import {
   Menu,
   MenuItem,
   Button,
+  Stack,
+  Slider
 } from "@mui/material";
 import {
   ExpandLess,
@@ -20,6 +22,7 @@ export default function HideAppBar({ chapters, headerRef }) {
   const menuRef = useRef();
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [textSize, setTextSize] = useState(50);
 
   /**
    * When user clicks the Top icon in the app bar, scroll them to the top of the page
@@ -39,6 +42,7 @@ export default function HideAppBar({ chapters, headerRef }) {
     setAnchorEl(menuRef.current);
   };
 
+
   const handleClose = () => {
     setAnchorEl(null);
     setMenuIsOpen(false);
@@ -54,6 +58,11 @@ export default function HideAppBar({ chapters, headerRef }) {
     })
   }
 
+  const handleTextSlide = (e, newValue) => {
+    console.log(newValue);
+    setTextSize(newValue);
+  }
+
   return (
     <Slide appear={false} direction="up" in={!trigger}>
       <AppBar
@@ -66,6 +75,7 @@ export default function HideAppBar({ chapters, headerRef }) {
         }}
       >
         <Toolbar ref={menuRef}>
+          {/* Chapter menu */}
           <Button onClick={handleMenuClick}>
             {menuIsOpen ? (
               <MenuOpenIcon sx={{ color: "white" }}></MenuOpenIcon>
@@ -73,6 +83,10 @@ export default function HideAppBar({ chapters, headerRef }) {
               <MenuIcon sx={{ color: "white" }} />
             )}
           </Button>
+          {/* Back to top button */}
+          <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
+            <Slider sx={{width: '10em', color: 'white'}} defaultValue={50} aria-label="text-size" value={textSize} onChange={handleTextSlide} />
+          </Stack>
           <Typography onClick={scrollToTop} component="div">
             Top <ExpandLess sx={{ verticalAlign: "middle" }} />
           </Typography>
