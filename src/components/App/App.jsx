@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import axios from "axios";
 import AppBar from "../AppBar/AppBar";
 import WorkStats from "../WorkStats/WorkStats";
+import WorkBody from "../WorkBody/WorkBody";
 import "./App.css";
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <div className="container">
+      {/* Import form */}
       <div className="site-header" ref={headerRef}>
         <h1>Import a work:</h1>
         <form onSubmit={handleSubmit}>
@@ -77,37 +79,25 @@ function App() {
           </div>
         </form>
       </div>
-      <hr />
-      <div className="pre-text">
-        <div className="title-group">
-          <h1 className="title">{ficData.title || ""}</h1>
-          {ficData.author && <h2>by {ficData.author}</h2>}
+      <hr/>
+
+      {/* Pre text body information */}
+      {ficData &&
+        <div className="pre-text">
+          <div className="title-group">
+            <h1 className="title">{ficData.title}</h1>
+            <h2>by {ficData.author}</h2>
+          </div>
+          {/* Accordion component containing statistics about the imported work */}
+          <WorkStats ficData={ficData} />
+          <br />
         </div>
-        {/* Accordion component containing statistics about the imported work */}
-        {ficData.stats && <WorkStats ficData={ficData} />}
-      </div>
-      <br />
-      {ficData && <hr />}
-      <div className="text-body">
-        {ficData &&
-          ficData.chapters.map((x, i) => {
-            return (
-              <>
-                <h2 id={i + 1} className={`chap-${i + 1}-header`}>
-                  {x.chapter_title}
-                </h2>
-                {x.chapter_text.map((y, j) => {
-                  return (
-                    <p id={j + 1} className="chap-line">
-                      {y}
-                    </p>
-                  );
-                })}
-              </>
-            );
-          })}
-        <AppBar chapters={ficData.chapters} headerRef={headerRef} />
-      </div>
+      }
+
+      {/* Text body */}
+      <WorkBody ficData={ficData}/>
+      {/* App bar */}
+      <AppBar chapters={ficData.chapters} headerRef={headerRef} />
     </div>
   );
 }
