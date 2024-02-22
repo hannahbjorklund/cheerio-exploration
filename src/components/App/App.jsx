@@ -1,14 +1,8 @@
 import React, { useState, useRef } from "react";
-import {
-  Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { Button } from "@mui/material";
 import axios from "axios";
 import AppBar from "../AppBar/AppBar";
-
+import WorkStats from "../WorkStats/WorkStats";
 import "./App.css";
 
 function App() {
@@ -58,7 +52,7 @@ function App() {
   return (
     <div className="container">
       <div className="site-header" ref={headerRef}>
-        <h1>Import an AO3 work:</h1>
+        <h1>Import a work:</h1>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label>URL: </label>
@@ -89,47 +83,8 @@ function App() {
           <h1 className="title">{ficData.title || ""}</h1>
           {ficData.author && <h2>by {ficData.author}</h2>}
         </div>
-        {ficData.stats && (
-          <Accordion
-            sx={{
-              fontFamily: "Open Sans",
-              backgroundColor: "#303030",
-              color: "antiquewhite",
-              fontSize: "19px",
-              width: "95%",
-            }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMore style={{ color: "antiquewhite" }} />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-            >
-              Work Stats
-            </AccordionSummary>
-            <AccordionDetails
-              sx={{
-                backgroundColor: "#343434",
-                fontFamily: "Open Sans",
-                fontSize: "16px",
-              }}
-            >
-              <div className="stats-container">
-                <div>
-                  <p>Words: {ficData.stats.words}</p>
-                  <p>Chapters: {ficData.stats.chapters}</p>
-                  <p>Published: {ficData.stats.published}</p>
-                  <p>Completed: {ficData.stats.completed}</p>
-                </div>
-                <div>
-                  <p>Hits: {ficData.stats.hits}</p>
-                  <p>Kudos: {ficData.stats.kudos}</p>
-                  <p>Comments: {ficData.stats.comments}</p>
-                  <p>Bookmarks: {ficData.stats.bookmarks}</p>
-                </div>
-              </div>
-            </AccordionDetails>
-          </Accordion>
-        )}
+        {/* Accordion component containing statistics about the imported work */}
+        {ficData.stats && <WorkStats ficData={ficData} />}
       </div>
       <br />
       {ficData && <hr />}
@@ -138,12 +93,12 @@ function App() {
           ficData.chapters.map((x, i) => {
             return (
               <>
-                <h2 id={i+1} className={`chap-${i+1}-header`}>
+                <h2 id={i + 1} className={`chap-${i + 1}-header`}>
                   {x.chapter_title}
                 </h2>
                 {x.chapter_text.map((y, j) => {
                   return (
-                    <p id={j+1} className="chap-line">
+                    <p id={j + 1} className="chap-line">
                       {y}
                     </p>
                   );
@@ -151,7 +106,7 @@ function App() {
               </>
             );
           })}
-          <AppBar chapters={ficData.chapters} headerRef={headerRef}/>
+        <AppBar chapters={ficData.chapters} headerRef={headerRef} />
       </div>
     </div>
   );
