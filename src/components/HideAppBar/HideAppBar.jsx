@@ -5,23 +5,17 @@ import {
   Slide,
   useScrollTrigger,
   Typography,
-  Menu,
-  MenuItem,
-  Button,
   Stack,
   Slider
 } from "@mui/material";
 import {
   ExpandLess,
-  Menu as MenuIcon,
-  MenuOpen as MenuOpenIcon,
 } from "@mui/icons-material";
+import ChapterMenu from "../ChapterMenu/ChapterMenu";
 
 export default function HideAppBar({ chapters, headerRef }) {
   const trigger = useScrollTrigger();
   const menuRef = useRef();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [textSize, setTextSize] = useState(50);
 
   /**
@@ -33,30 +27,6 @@ export default function HideAppBar({ chapters, headerRef }) {
       behavior: "smooth",
     });
   };
-
-  /**
-   * When user clicks the menu icon, open the menu and change icon
-   */
-  const handleMenuClick = () => {
-    setMenuIsOpen(!menuIsOpen);
-    setAnchorEl(menuRef.current);
-  };
-
-
-  const handleClose = () => {
-    setAnchorEl(null);
-    setMenuIsOpen(false);
-  };
-
-  /**
-   * When the user clicks a chapter in the menu, close the menu then scroll them to that chapter
-   */
-  const scrollToChapter = (id) => {
-    handleClose();
-    document.querySelector(`.chap-${id}-header`).scrollIntoView({
-      behavior: 'smooth'
-    })
-  }
 
   const handleTextSlide = (e, newValue) => {
     console.log(newValue);
@@ -76,44 +46,15 @@ export default function HideAppBar({ chapters, headerRef }) {
       >
         <Toolbar ref={menuRef}>
           {/* Chapter menu */}
-          <Button onClick={handleMenuClick}>
-            {menuIsOpen ? (
-              <MenuOpenIcon sx={{ color: "white" }}></MenuOpenIcon>
-            ) : (
-              <MenuIcon sx={{ color: "white" }} />
-            )}
-          </Button>
-          {/* Back to top button */}
+          <ChapterMenu chapters={chapters} menuRef={menuRef}/>
+          {/* Text size slider */}
           <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
             <Slider sx={{width: '10em', color: 'white'}} defaultValue={50} aria-label="text-size" value={textSize} onChange={handleTextSlide} />
           </Stack>
+          {/* Back to top button */}
           <Typography onClick={scrollToTop} component="div">
             Top <ExpandLess sx={{ verticalAlign: "middle" }} />
           </Typography>
-          <Menu
-            sx={{ height: "50vh", width: "auto"}}
-            open={menuIsOpen}
-            onClose={handleClose}
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "left",
-            }}
-            transformOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
-          >
-            {chapters &&
-              chapters.map((x, i) => {
-                return (
-                  <MenuItem>
-                    <p id={i+1} onClick={(e) => scrollToChapter(i+1)} className="menu-item">{x.chapter_title}</p>
-                  </MenuItem>
-                );
-              })
-            }
-          </Menu>
         </Toolbar>
       </AppBar>
     </Slide>
