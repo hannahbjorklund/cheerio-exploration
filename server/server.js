@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 5001;
 
 // Route Includes
 const ao3Router = require('./routes/ao3.router');
-const ffRouter = require('./routes/ffdotnet.router');
+const wattpadRouter = require('./routes/wattpad.router');
 
 // Express Middleware
 app.use(express.json());
@@ -14,7 +14,7 @@ app.use(express.static('build'));
 
 // Routes
 app.use('/api/ao3', ao3Router);
-app.use('/api/ffdotnet', ffRouter);
+app.use('/api/wattpad', wattpadRouter);
 
 // Listen Server & Port
 app.listen(PORT, () => {

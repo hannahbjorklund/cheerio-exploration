@@ -14,10 +14,11 @@ router.get("/", (req, res) => {
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     );
-    await page.goto("https://m.fanfiction.net/s/13825360/0/");
-    // Wait for 20 seconds. This site has a captcha that needs to load
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
+    // Puppeteer will navigate to the 
+    await page.goto("https://www.wattpad.com/story/216190804-leon-kennedy-x-reader");
+    await page.waitForSelector('.btn-primary.read-btn');
+    await page.click('.btn-primary.read-btn');
+    await page.waitForNavigation();
     await page.screenshot({ path: "ffdotnet.png" });
     const html = await page.content();
     res.send(html);
