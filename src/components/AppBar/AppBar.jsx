@@ -1,22 +1,18 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import {
   AppBar,
   Toolbar,
   Slide,
   useScrollTrigger,
   Typography,
-  Stack,
-  Slider
 } from "@mui/material";
-import {
-  ExpandLess,
-} from "@mui/icons-material";
+import { ExpandLess } from "@mui/icons-material";
 import ChapterMenu from "../ChapterMenu/ChapterMenu";
+import TextSlider from "../TextSlider/TextSlider";
 
 export default function HideAppBar({ chapters, headerRef }) {
   const trigger = useScrollTrigger();
   const menuRef = useRef();
-  const [textSize, setTextSize] = useState(50);
 
   /**
    * When user clicks the Top icon in the app bar, scroll them to the top of the page
@@ -27,11 +23,6 @@ export default function HideAppBar({ chapters, headerRef }) {
       behavior: "smooth",
     });
   };
-
-  const handleTextSlide = (e, newValue) => {
-    console.log(newValue);
-    setTextSize(newValue);
-  }
 
   return (
     <Slide appear={false} direction="up" in={!trigger}>
@@ -46,11 +37,7 @@ export default function HideAppBar({ chapters, headerRef }) {
       >
         <Toolbar ref={menuRef}>
           {/* Chapter menu */}
-          <ChapterMenu chapters={chapters} menuRef={menuRef}/>
-          {/* Text size slider */}
-          <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
-            <Slider sx={{width: '10em', color: 'white'}} defaultValue={50} aria-label="text-size" value={textSize} onChange={handleTextSlide} />
-          </Stack>
+          <ChapterMenu chapters={chapters} menuRef={menuRef} />
           {/* Back to top button */}
           <Typography onClick={scrollToTop} component="div">
             Top <ExpandLess sx={{ verticalAlign: "middle" }} />
