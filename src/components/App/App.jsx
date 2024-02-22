@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import axios from "axios";
-import HideAppBar from "../HideAppBar/HideAppBar";
+import AppBar from "../AppBar/AppBar";
 
 import "./App.css";
 
@@ -134,7 +134,6 @@ function App() {
       <br />
       {ficData && <hr />}
       <div className="text-body">
-        <HideAppBar chapters={ficData.chapters} headerRef={headerRef}/>
         {ficData &&
           ficData.chapters.map((x, i) => {
             return (
@@ -152,6 +151,7 @@ function App() {
               </>
             );
           })}
+          <AppBar chapters={ficData.chapters} headerRef={headerRef}/>
       </div>
     </div>
   );
