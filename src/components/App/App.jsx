@@ -1,9 +1,11 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@mui/material";
 import axios from "axios";
+
 import AppBar from "../AppBar/AppBar";
 import WorkStats from "../WorkStats/WorkStats";
 import WorkBody from "../WorkBody/WorkBody";
+
 import "./App.css";
 
 function App() {
@@ -60,7 +62,7 @@ function App() {
             <label>URL: </label>
             <input
               required
-              placeholder="AO3 url"
+              placeholder="Work URL"
               value={inputURL}
               onChange={(e) => setInputURL(e.target.value)}
             />
@@ -79,23 +81,26 @@ function App() {
           </div>
         </form>
       </div>
-      <hr/>
+      <hr />
 
       {/* Pre text body information */}
-      {ficData &&
-        <div className="pre-text">
-          <div className="title-group">
-            <h1 className="title">{ficData.title}</h1>
-            <h2>by {ficData.author}</h2>
+      {ficData && (
+        <>
+          <div className="pre-text">
+            <div className="title-group">
+              <h1 className="title">{ficData.title}</h1>
+              <h2>by {ficData.author}</h2>
+            </div>
+            {/* Accordion component containing statistics about the imported work */}
+            <WorkStats ficData={ficData} />
+            <br />
           </div>
-          {/* Accordion component containing statistics about the imported work */}
-          <WorkStats ficData={ficData} />
-          <br />
-        </div>
-      }
+          <hr />
+        </>
+      )}
 
       {/* Text body */}
-      <WorkBody ficData={ficData}/>
+      <WorkBody ficData={ficData} />
       {/* App bar */}
       <AppBar chapters={ficData.chapters} headerRef={headerRef} />
     </div>
