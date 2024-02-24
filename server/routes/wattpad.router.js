@@ -21,9 +21,20 @@ router.get("/", (req, res) => {
     await page.click('.btn-primary.read-btn');
     // Navigating to the start of the work
     await page.waitForNavigation();
-    await page.screenshot({ path: "ffdotnet.png" });
-    const html = await page.content();
-    const $ = cheerio.load(html);
+
+    // We want to go through each chapter, scrape, click the next button, and continue until 
+    //  all chapters have been scraped
+   
+    
+      const html = await page.content();
+      const $ = cheerio.load(html);
+      
+      await page.screenshot({path: `wattpad-chap-1.png`})
+      const navigationPromise = page.waitForNavigation();
+      page.click('div#story-part-navigation a');
+      await navigationPromise;
+      await page.screenshot({path: `wattpad-chap-2.png`})
+      
     
 
     res.send(html);
