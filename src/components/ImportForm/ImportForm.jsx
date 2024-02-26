@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
-import { Button } from "@mui/material";
+import React, { useState } from "react";
+import { Button, Tooltip } from "@mui/material";
+import { Info as InfoIcon } from "@mui/icons-material";
 import axios from "axios";
 
 export default function ImportForm({setFicData}) {
@@ -53,6 +54,9 @@ export default function ImportForm({setFicData}) {
           value={inputURL}
           onChange={(e) => setInputURL(e.target.value)}
         />
+        <Tooltip title="Import currently supports AO3 and Wattpad urls" placement='top-end' enterTouchDelay={0}>
+          <InfoIcon/>
+        </Tooltip>
       </div>
       <div className="button-group">
         <Button size="medium" type="submit" variant="contained">

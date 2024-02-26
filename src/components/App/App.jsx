@@ -1,6 +1,4 @@
 import React, { useState, useRef } from "react";
-import { Button } from "@mui/material";
-import axios from "axios";
 
 import AppBar from "../AppBar/AppBar";
 import WorkStats from "../WorkStats/WorkStats";
@@ -15,7 +13,7 @@ function App() {
 
   return (
     <div className="container">
-      {/* Import form */}
+      {/* Import section */}
       <div className="site-header" ref={headerRef}>
         <h1>Import a work:</h1>
         <ImportForm setFicData = {setFicData}/>
