@@ -31,17 +31,17 @@ export default function HideAppBar({ chapters, headerRef }) {
           top: "auto",
           bottom: 0,
           height: "3.5em",
-          display: "flex",
-          alignItems: "flex-start",
         }}
       >
-        <Toolbar ref={menuRef}>
+        <Toolbar sx={{display: 'flex', justifyContent: 'space-between'}} ref={menuRef}>
           {/* Chapter menu */}
           <ChapterMenu chapters={chapters} menuRef={menuRef} />
           {/* Back to top button */}
-          <Typography onClick={scrollToTop} component="div">
-            Top <ExpandLess sx={{ verticalAlign: "middle" }} />
-          </Typography>
+          <div className = 'to-top'>
+            <Typography onClick={scrollToTop} component="div">
+              Top <ExpandLess sx={{ verticalAlign: "middle"}} />
+            </Typography>
+          </div>
         </Toolbar>
       </AppBar>
     </Slide>

@@ -46,7 +46,7 @@ export default function ChapterMenu({ chapters, menuRef }) {
         )}
       </Button>
       <Menu
-        sx={{ height: "50vh", width: "auto" }}
+        sx={{ height: "50vh", width: "auto"}}
         open={menuIsOpen}
         onClose={handleClose}
         anchorEl={anchorEl}
