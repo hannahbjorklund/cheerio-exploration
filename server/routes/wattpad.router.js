@@ -27,12 +27,14 @@ router.get("/", (req, res) => {
    
     
       const html = await page.content();
-      const $ = cheerio.load(html);
+      
       
       await page.screenshot({path: `wattpad-chap-1.png`})
-      const navigationPromise = page.waitForNavigation();
-      page.click('div#story-part-navigation a');
-      await navigationPromise;
+      console.log("Waiting for nav selector")
+      await page.waitForSelector('div#story-part-navigation a');
+      console.log("Clicking")
+      await page.click('')
+      await page.waitForNavigation();
       await page.screenshot({path: `wattpad-chap-2.png`})
       
     
