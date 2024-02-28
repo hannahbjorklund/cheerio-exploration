@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import { ExpandLess } from "@mui/icons-material";
 import ChapterMenu from "../ChapterMenu/ChapterMenu";
-import TextSlider from "../TextSlider/TextSlider";
 
 export default function HideAppBar({ chapters, headerRef }) {
   const trigger = useScrollTrigger();
